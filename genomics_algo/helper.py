@@ -1,4 +1,9 @@
 import math
+import numpy as np
+from collections import Counter
+from typing import Sequence
+
+from numpy.core.multiarray import concatenate
 
 COMPLEMENTARY_BASE = {"A": "T", "C": "G", "G": "C", "T": "A"}
 
@@ -108,3 +113,48 @@ def map_phred33_ascii_to_qualityscore(phred33_char):
         quality ([type]): [description]
     """
     return ord(phred33_char) - 33
+
+
+def get_freq_for_qualities(qualities):
+    """
+    Generates a frequency distribution from a list of quality strings
+    """
+    concatenated_qualities = ''.join(qualities)
+    quality_scores = [map_phred33_ascii_to_qualityscore(char) for char in concatenated_qualities] 
+    freq = Counter(quality_scores)
+    sorted_freq = sorted(dict(freq).items())
+    return [pair[0] for pair in sorted_freq], [pair[1] for pair in sorted_freq]
+
+
+def same_length_reads(reads):
+    """
+    Returns true if the list of sequencing reads has at least one sequence read and
+    each of the reads has the same length, False otherwise
+    """
+    assert len(reads) > 0
+    lengths = [len(read) for read in reads]
+    return min(lengths) == max(lengths)
+
+
+def find_GC_by_position(reads):
+    """
+    Returns the average GC content per index in a list of sequencing reads
+    """
+    assert same_length_reads(reads)
+    reads_length = len(reads[0])
+    gc = np.zeros(reads_length)
+    for read in reads:
+        for index, base in enumerate(read):
+            if base in ['G', 'C']:
+                gc[index] += 1
+    gc = gc/len(reads)
+    return gc
+
+
+def get_base_freq(reads):
+    """
+    Returns the aggregate frequency of bases in the sequencing reads
+    """
+    concatenated_reads = ''.join(reads)
+    base_freq = Counter(concatenated_reads)
+    return base_freq
