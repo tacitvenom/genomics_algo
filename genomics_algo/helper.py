@@ -18,6 +18,7 @@ COMPLEMENTARY_BASE = {
     Bases.C: Bases.G,
     Bases.G: Bases.C,
     Bases.T: Bases.A,
+    "N": "N",
 }
 
 
