@@ -1,11 +1,24 @@
 import math
 import numpy as np
+import random
+
 from collections import Counter
 from typing import Sequence
 
-from numpy.core.multiarray import concatenate
 
-COMPLEMENTARY_BASE = {"A": "T", "C": "G", "G": "C", "T": "A"}
+class Bases:
+    A = "A"
+    C = "C"
+    G = "G"
+    T = "T"
+
+
+COMPLEMENTARY_BASE = {
+    Bases.A: Bases.T,
+    Bases.C: Bases.G,
+    Bases.G: Bases.C,
+    Bases.T: Bases.A,
+}
 
 
 def longest_common_prefix(s1, s2):
@@ -119,8 +132,10 @@ def get_freq_for_qualities(qualities):
     """
     Generates a frequency distribution from a list of quality strings
     """
-    concatenated_qualities = ''.join(qualities)
-    quality_scores = [map_phred33_ascii_to_qualityscore(char) for char in concatenated_qualities] 
+    concatenated_qualities = "".join(qualities)
+    quality_scores = [
+        map_phred33_ascii_to_qualityscore(char) for char in concatenated_qualities
+    ]
     freq = Counter(quality_scores)
     sorted_freq = sorted(dict(freq).items())
     return [pair[0] for pair in sorted_freq], [pair[1] for pair in sorted_freq]
@@ -145,9 +160,9 @@ def find_GC_by_position(reads):
     gc = np.zeros(reads_length)
     for read in reads:
         for index, base in enumerate(read):
-            if base in ['G', 'C']:
+            if base in ["G", "C"]:
                 gc[index] += 1
-    gc = gc/len(reads)
+    gc = gc / len(reads)
     return gc
 
 
@@ -155,6 +170,14 @@ def get_base_freq(reads):
     """
     Returns the aggregate frequency of bases in the sequencing reads
     """
-    concatenated_reads = ''.join(reads)
+    concatenated_reads = "".join(reads)
     base_freq = Counter(concatenated_reads)
     return base_freq
+
+
+def generate_artificial_reads(genome, number_of_reads, read_length):
+    reads = []
+    for _ in range(number_of_reads):
+        start_position = random.randint(0, len(genome) - read_length + 1)
+        reads.append(genome[start_position : start_position + read_length + 1])
+    return reads
