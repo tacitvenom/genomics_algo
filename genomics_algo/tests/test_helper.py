@@ -5,6 +5,7 @@ from collections import Counter
 
 from genomics_algo.helper import (
     longest_common_prefix,
+    longest_common_suffix,
     reverse_complement,
     read_genome,
     read_fastq,
@@ -40,6 +41,33 @@ def test_longest_common_prefix():
     s1 = ""
     s2 = "GCCT"
     assert longest_common_prefix(s1, s2) == ""
+    s1 = "GCCT"
+    s2 = s1
+    assert longest_common_prefix(s1, s2) == s1
+
+
+def test_longest_common_suffix():
+    s1 = "ACTA"
+    s2 = "GCCT"
+    assert longest_common_suffix(s1, s2) == ""
+    s1 = "ACTA"
+    s2 = "CTA"
+    assert longest_common_suffix(s1, s2) == "CTA"
+    s1 = "CTA"
+    s2 = "ACTA"
+    assert longest_common_suffix(s1, s2) == "CTA"
+    s1 = "GATAT"
+    s2 = "GAATAT"
+    assert longest_common_suffix(s1, s2) == "ATAT"
+    s1 = "ATGA"
+    s2 = ""
+    assert longest_common_suffix(s1, s2) == ""
+    s1 = ""
+    s2 = "GCCT"
+    assert longest_common_suffix(s1, s2) == ""
+    s1 = "GCCT"
+    s2 = s1
+    assert longest_common_prefix(s1, s2) == s1
 
 
 def test_reverse_complement():
@@ -155,13 +183,13 @@ def test_same_length_reads():
         same_length_reads(reads)
 
     reads = ["AACGTTA"]
-    assert same_length_reads(reads) == True
+    assert same_length_reads(reads)
 
     reads = ["AACGTTA", "CGCGTTT"]
-    assert same_length_reads(reads) == True
+    assert same_length_reads(reads)
 
     reads = ["AACGTTA", "CGCGTTT", "GTTAC"]
-    assert same_length_reads(reads) == False
+    assert not same_length_reads(reads)
 
 
 def test_find_GC_by_position():

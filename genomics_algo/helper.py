@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 from collections import Counter
-from typing import Sequence
+from typing import List, Tuple
 
 
 class Bases:
@@ -22,17 +22,14 @@ COMPLEMENTARY_BASE = {
 }
 
 
-def longest_common_prefix(s1, s2):
+def longest_common_prefix(s1: str, s2: str) -> str:
     """
     Finds the longest common prefix (substring) given two strings
 
-    s1: string
-        First string to compare
-    s2: string
-        Second string to compare
+    s1: First string to compare
+    s2: Second string to compare
 
     Returns:
-    longest_common_prefix: String
         Longest common prefix between s1 and s2
     """
     i = 0
@@ -43,11 +40,23 @@ def longest_common_prefix(s1, s2):
     return s1[:i]
 
 
-def reverse_complement(s):
+def longest_common_suffix(s1: str, s2: str) -> str:
+    """
+    Finds the longest common suffix (substring) given two strings
+
+    s1: First string to compare
+    s2: Second string to compare
+
+    Returns:
+        Longest common suffix between s1 and s2
+    """
+    return longest_common_prefix(s1[::-1], s2[::-1])[::-1]
+
+
+def reverse_complement(s: str) -> str:
     """
     Find the reverse complement of a DNA strand
-    s: string
-        A DNA sequence of a strand - the string must have the characters A, C, G and T
+    s: A DNA sequence of a strand - the string must have the characters A, C, G and T
 
     Returns:
         DNA sequence of the opposite strand in the reverse order
@@ -56,15 +65,13 @@ def reverse_complement(s):
     return "".join([COMPLEMENTARY_BASE[base] for base in s[::-1]])
 
 
-def read_genome(filename):
+def read_genome(filename: str) -> str:
     """
     Reads a genome from a .fa file
 
-    filename: string
-        relative or absolute path of the .fa file to be read from
+    filename: relative or absolute path of the .fa file to be read from
 
     Returns:
-    genome: string
         Genome string
     """
     with open(filename) as f:
@@ -74,17 +81,14 @@ def read_genome(filename):
     return genome
 
 
-def read_fastq(filename):
+def read_fastq(filename: str) -> Tuple[List[str], List[str]]:
     """
     Reads sequences and qualities from a .fastq file
 
-    filename: string
-        relative or absolute path of the .fa file to be read from
+    filename: relative or absolute path of the .fa file to be read from
 
     Returns:
-    reads: list
         List of sequence reads
-    qualities: list
         List of qualities corresponding to each sequence read
 
     """
@@ -104,45 +108,35 @@ def read_fastq(filename):
     return reads, qualities
 
 
-def map_phred33_to_error_probability(phred33):
-    """Maps a ASCII phred33 quality character to a quality score in fraction
-    # TODO
-    Args:
-        quality ([type]): [description]
-    """
+def map_phred33_to_error_probability(phred33: str) -> float:
+    """Maps a ASCII phred33 quality character to error probability"""
     return 10 ** (-phred33 / 10)
 
 
-def map_errorprobability_to_phred33(probability):
-    """
-    # TODO
-    """
+def map_errorprobability_to_phred33(probability: float) -> str:
+    """Maps an error probability value to ASCII phred33 quality character"""
     return -10 * math.log(probability, 10)
 
 
-def map_phred33_ascii_to_qualityscore(phred33_char):
-    """Maps a ASCII phred33 quality character to a quality score
-    # TODO
-    Args:
-        quality ([type]): [description]
-    """
+def map_phred33_ascii_to_qualityscore(phred33_char: str) -> float:
+    """Maps a ASCII phred33 quality character to a quality score"""
     return ord(phred33_char) - 33
 
 
-def get_freq_for_qualities(qualities):
-    """
-    Generates a frequency distribution from a list of quality strings
-    """
+def get_freq_for_qualities(qualities: List[str]) -> Tuple[List[str], List[int]]:
+    """Generates a frequency distribution from a list of quality strings"""
     concatenated_qualities = "".join(qualities)
     quality_scores = [
         map_phred33_ascii_to_qualityscore(char) for char in concatenated_qualities
     ]
     freq = Counter(quality_scores)
     sorted_freq = sorted(dict(freq).items())
-    return [pair[0] for pair in sorted_freq], [pair[1] for pair in sorted_freq]
+    values = [pair[0] for pair in sorted_freq]
+    frequencies = [pair[1] for pair in sorted_freq]
+    return values, frequencies
 
 
-def same_length_reads(reads):
+def same_length_reads(reads: List[str]) -> bool:
     """
     Returns true if the list of sequencing reads has at least one sequence read and
     each of the reads has the same length, False otherwise
@@ -152,7 +146,7 @@ def same_length_reads(reads):
     return min(lengths) == max(lengths)
 
 
-def find_GC_by_position(reads):
+def find_GC_by_position(reads: List[str]) -> np.ndarray:
     """
     Returns the average GC content per index in a list of sequencing reads
     """
@@ -167,7 +161,7 @@ def find_GC_by_position(reads):
     return gc
 
 
-def get_base_freq(reads):
+def get_base_freq(reads: List[str]):
     """
     Returns the aggregate frequency of bases in the sequencing reads
     """
@@ -176,7 +170,10 @@ def get_base_freq(reads):
     return base_freq
 
 
-def generate_artificial_reads(genome, number_of_reads, read_length):
+def generate_artificial_reads(
+    genome: str, number_of_reads: int, read_length: int
+) -> List[str]:
+    """Generate a set of reads randomly from a genome"""
     reads = []
     for _ in range(number_of_reads):
         start_position = random.randint(0, len(genome) - read_length + 1)
