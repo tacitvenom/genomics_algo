@@ -43,7 +43,7 @@ def test_longest_common_prefix():
     assert longest_common_prefix(s1, s2) == ""
     s1 = "GCCT"
     s2 = s1
-    assert longest_common_prefix(s1, s2) == s1
+    assert longest_common_prefix(s2, s2) == s2
 
 
 def test_longest_common_suffix():
@@ -67,7 +67,7 @@ def test_longest_common_suffix():
     assert longest_common_suffix(s1, s2) == ""
     s1 = "GCCT"
     s2 = s1
-    assert longest_common_prefix(s1, s2) == s1
+    assert longest_common_prefix(s2, s2) == s2
 
 
 def test_reverse_complement():
