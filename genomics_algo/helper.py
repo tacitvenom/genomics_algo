@@ -166,8 +166,7 @@ def get_base_freq(reads: List[str]):
     Returns the aggregate frequency of bases in the sequencing reads
     """
     concatenated_reads = "".join(reads)
-    base_freq = Counter(concatenated_reads)
-    return base_freq
+    return Counter(concatenated_reads)
 
 
 def generate_artificial_reads(

@@ -10,18 +10,17 @@ def get_occurences_with_naive_match(pattern: str, text: str) -> List[int]:
     occurences = []
     len_pattern = len(pattern)
     len_text = len(text)
-    if len_pattern > len_text:
-        return occurences
-    else:
+    if len_pattern <= len_text:
         for index in range(len_text - len_pattern + 1):
-            match = True
-            for offset in range(len_pattern):
-                if pattern[offset] != text[index + offset]:
-                    match = False
-                    break
+            match = all(
+                pattern[offset] == text[index + offset]
+                for offset in range(len_pattern)
+            )
+
             if match:
                 occurences.append(index)
-        return occurences
+
+    return occurences
 
 
 def get_occurences_with_exact_match_with_reverse_complement(
@@ -71,9 +70,7 @@ def get_occurences_with_boyer_moore_exact_matching(
     occurences = []
     len_pattern = len(pattern)
     len_text = len(text)
-    if len_pattern > len_text:
-        return occurences
-    else:
+    if len_pattern <= len_text:
         index = 0
         while index < (len_text - len_pattern + 1):
             match = True
@@ -95,4 +92,4 @@ def get_occurences_with_boyer_moore_exact_matching(
             if match:
                 occurences.append(index)
             index += 1
-        return occurences
+    return occurences

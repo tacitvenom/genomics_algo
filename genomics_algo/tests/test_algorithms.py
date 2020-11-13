@@ -34,6 +34,11 @@ def test_get_occurences_with_exact_match(exact_matching_algo):
     result = exact_matching_algo(pattern, text)
     assert result == [23, 37]
 
+    text = "CGATATATCCATAG"
+    pattern = "ATA"
+    result = exact_matching_algo(pattern, text)
+    assert result == [2, 4, 10]
+
 
 @pytest.mark.parametrize(
     "exact_matching_algo",
