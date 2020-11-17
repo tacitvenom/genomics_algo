@@ -13,8 +13,7 @@ def get_occurences_with_naive_match(pattern: str, text: str) -> List[int]:
     if len_pattern <= len_text:
         for index in range(len_text - len_pattern + 1):
             match = all(
-                pattern[offset] == text[index + offset]
-                for offset in range(len_pattern)
+                pattern[offset] == text[index + offset] for offset in range(len_pattern)
             )
 
             if match:
@@ -41,6 +40,9 @@ def get_occurences_with_exact_match_with_reverse_complement(
 def get_alignments_skipped_bad_char_rule(
     mismatched_char: str, pattern_prefix: str
 ) -> int:
+    """Get the number of alignments that can be skipped according to bad
+    character rule in Boyer Moore's exact matching algorithm
+    """
     reverse_pattern_prefix = pattern_prefix[::-1]  # checking from right to left
     len_pattern_prefix = len(pattern_prefix)
     for index in range(len_pattern_prefix):
@@ -50,6 +52,9 @@ def get_alignments_skipped_bad_char_rule(
 
 
 def get_alignments_skipped_good_suffix_rule(matched_suffix: str, pattern: str) -> int:
+    """Get the number of alignments that can be skipped according to good
+    suffix rule in Boyer Moore's exact matching algorithm
+    """
     len_pattern = len(pattern)
     for i in range(len_pattern - 1, 0, -1):
         len_smaller_substr = min(i, len(matched_suffix))
@@ -59,6 +64,20 @@ def get_alignments_skipped_good_suffix_rule(matched_suffix: str, pattern: str) -
         ):
             return len_pattern - i - 1
     return len_pattern - 1
+
+
+def get_alignments_skipped_gs_lookup(pattern: str) -> dict:
+    """Get the number of alignments that can be skipped according to good
+    suffix rule in Boyer Moore's exact matching algorithm for each possible
+    suffix of a pattern in a dictionary
+    """
+    gs_lookup = {}
+    for index in range(len(pattern)):
+        suffix = pattern[index + 1 :]
+        gs_lookup[suffix] = get_alignments_skipped_good_suffix_rule(
+            matched_suffix=suffix, pattern=pattern
+        )
+    return gs_lookup
 
 
 def get_occurences_with_boyer_moore_exact_matching(
@@ -82,7 +101,7 @@ def get_occurences_with_boyer_moore_exact_matching(
                         pattern_prefix=pattern[:offset],
                     )
                     alignments_to_skip_gs = get_alignments_skipped_good_suffix_rule(
-                        matched_suffix=pattern[offset + 1, :], pattern=pattern
+                        matched_suffix=pattern[offset + 1 :], pattern=pattern
                     )
                     alignments_to_skip = max(
                         alignments_to_skip_bc, alignments_to_skip_gs

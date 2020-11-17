@@ -5,6 +5,7 @@ from genomics_algo.algorithms import (
     get_occurences_with_exact_match_with_reverse_complement,
     get_alignments_skipped_bad_char_rule,
     get_alignments_skipped_good_suffix_rule,
+    get_alignments_skipped_gs_lookup,
     get_occurences_with_boyer_moore_exact_matching,
 )
 
@@ -113,3 +114,21 @@ def test_get_alignments_skipped_good_suffix_rule():
 
     matched_suffix = "TACTTAC"
     assert get_alignments_skipped_good_suffix_rule(matched_suffix, pattern) == 3
+
+
+def test_get_alignments_skipped_gs_lookup():
+    pattern = ""
+    assert get_alignments_skipped_gs_lookup(pattern) == {}
+    pattern = "GTAGCGGCG"
+    expected_lookup = {
+        "": 0,
+        "G": 1,
+        "CG": 2,
+        "GCG": 2,
+        "GGCG": 7,
+        "CGGCG": 7,
+        "GCGGCG": 7,
+        "AGCGGCG": 7,
+        "TAGCGGCG": 7,
+    }
+    assert get_alignments_skipped_gs_lookup(pattern) == expected_lookup
