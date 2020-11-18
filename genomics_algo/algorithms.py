@@ -103,9 +103,7 @@ def get_occurences_with_boyer_moore_exact_matching(
                     alignments_to_skip_gs = get_alignments_skipped_good_suffix_rule(
                         matched_suffix=pattern[offset + 1 :], pattern=pattern
                     )
-                    alignments_to_skip = max(
-                        alignments_to_skip_bc, alignments_to_skip_gs
-                    )
+                    alignments_to_skip = max(alignments_to_skip_bc, alignments_to_skip_gs)
                     index += alignments_to_skip
                     break
             if match:
