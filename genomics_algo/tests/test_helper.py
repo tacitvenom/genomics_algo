@@ -4,73 +4,21 @@ import pytest
 from collections import Counter
 
 from genomics_algo.helper import (
-    longest_common_prefix,
-    longest_common_suffix,
     reverse_complement,
     read_genome,
     read_fastq,
     map_phred33_to_error_probability,
     map_errorprobability_to_phred33,
-    map_phred33_ascii_to_qualityscore,
     get_freq_for_qualities,
     same_length_reads,
     find_GC_by_position,
-    get_base_freq,
     generate_artificial_reads,
 )
 
 DELTA = 10e-4
 
 
-def test_longest_common_prefix():
-    s1 = "ACTA"
-    s2 = "GCCT"
-    assert longest_common_prefix(s1, s2) == ""
-    s1 = "ACTA"
-    s2 = "ACT"
-    assert longest_common_prefix(s1, s2) == "ACT"
-    s1 = "ACTA"
-    s2 = "ACT"
-    assert longest_common_prefix(s1, s2) == "ACT"
-    s1 = "GATA"
-    s2 = "GAAT"
-    assert longest_common_prefix(s1, s2) == "GA"
-    s1 = "ATGA"
-    s2 = ""
-    assert longest_common_prefix(s1, s2) == ""
-    s1 = ""
-    s2 = "GCCT"
-    assert longest_common_prefix(s1, s2) == ""
-    s1 = "GCCT"
-    assert longest_common_prefix(s1, s1) == s1
-
-
-def test_longest_common_suffix():
-    s1 = "ACTA"
-    s2 = "GCCT"
-    assert longest_common_suffix(s1, s2) == ""
-    s1 = "ACTA"
-    s2 = "CTA"
-    assert longest_common_suffix(s1, s2) == "CTA"
-    s1 = "CTA"
-    s2 = "ACTA"
-    assert longest_common_suffix(s1, s2) == "CTA"
-    s1 = "GATAT"
-    s2 = "GAATAT"
-    assert longest_common_suffix(s1, s2) == "ATAT"
-    s1 = "ATGA"
-    s2 = ""
-    assert longest_common_suffix(s1, s2) == ""
-    s1 = ""
-    s2 = "GCCT"
-    assert longest_common_suffix(s1, s2) == ""
-    s1 = "GCCT"
-    assert longest_common_prefix(s1, s1) == s1
-
-
 def test_reverse_complement():
-    assert reverse_complement("ATGC") == "GCAT"
-    assert reverse_complement("") == ""
     with pytest.raises(KeyError):
         reverse_complement("AGRTTTAG")
 
@@ -114,11 +62,6 @@ def test_map_errorprobability_to_phred33():
     }
     for probability, score in error_probability_to_phred33.items():
         assert abs(map_errorprobability_to_phred33(probability) - score) < DELTA
-
-
-def test_map_phred33_ascii_to_qualityscore():
-    assert map_phred33_ascii_to_qualityscore("#") == 2
-    assert map_phred33_ascii_to_qualityscore("J") == 41
 
 
 def test_get_freq_for_qualities():
@@ -176,18 +119,8 @@ def test_get_freq_for_qualities():
 
 
 def test_same_length_reads():
-    reads = []
     with pytest.raises(AssertionError):
-        same_length_reads(reads)
-
-    reads = ["AACGTTA"]
-    assert same_length_reads(reads)
-
-    reads = ["AACGTTA", "CGCGTTT"]
-    assert same_length_reads(reads)
-
-    reads = ["AACGTTA", "CGCGTTT", "GTTAC"]
-    assert not same_length_reads(reads)
+        same_length_reads([])
 
 
 def test_find_GC_by_position():
@@ -204,14 +137,6 @@ def test_find_GC_by_position():
 
     reads = ["AACGTTA", "CGCGTTT"]
     assert all(find_GC_by_position(reads) == np.array([0.5, 0.5, 1, 1, 0, 0, 0]))
-
-
-def test_get_base_freq():
-    reads = ["AACGTTAN"]
-    assert get_base_freq(reads) == Counter({"G": 1, "C": 1, "A": 3, "T": 2, "N": 1})
-
-    reads = ["AACGTTA", "CGCGTTT"]
-    assert get_base_freq(reads) == Counter({"G": 3, "C": 3, "A": 3, "T": 5})
 
 
 def test_generate_artificial_reads():

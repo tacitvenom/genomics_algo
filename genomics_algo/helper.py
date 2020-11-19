@@ -31,6 +31,21 @@ def longest_common_prefix(s1: str, s2: str) -> str:
 
     Returns:
         Longest common prefix between s1 and s2
+
+    >>> longest_common_prefix("ACTA", "GCCT")
+    ''
+    >>> longest_common_prefix("ACTA", "ACT")
+    'ACT'
+    >>> longest_common_prefix("ACT", "ACTA")
+    'ACT'
+    >>> longest_common_prefix("GATA", "GAAT")
+    'GA'
+    >>> longest_common_prefix("ATGA", "")
+    ''
+    >>> longest_common_prefix("", "GCCT")
+    ''
+    >>> longest_common_prefix("GCCT", "GCCT")
+    'GCCT'
     """
     i = 0
     while i < min(len(s1), len(s2)):
@@ -49,6 +64,21 @@ def longest_common_suffix(s1: str, s2: str) -> str:
 
     Returns:
         Longest common suffix between s1 and s2
+
+    >>> longest_common_suffix("ACTA", "GCCT")
+    ''
+    >>> longest_common_suffix("ACTA", "CTA")
+    'CTA'
+    >>> longest_common_suffix("CTA", "ACTA")
+    'CTA'
+    >>> longest_common_suffix("GATAT", "GAATAT")
+    'ATAT'
+    >>> longest_common_suffix("ACTA", "")
+    ''
+    >>> longest_common_suffix("", "GCCT")
+    ''
+    >>> longest_common_suffix("GCCT", "GCCT")
+    'GCCT'
     """
     return longest_common_prefix(s1[::-1], s2[::-1])[::-1]
 
@@ -60,8 +90,13 @@ def reverse_complement(s: str) -> str:
 
     Returns:
         DNA sequence of the opposite strand in the reverse order
+
+    >>> reverse_complement("ATGC")
+    'GCAT'
+    >>> reverse_complement("")
+    ''
     """
-    # TODO: make robust againt garbage values
+    # TODO: make robust against garbage values
     return "".join([COMPLEMENTARY_BASE[base] for base in s[::-1]])
 
 
@@ -119,7 +154,12 @@ def map_errorprobability_to_phred33(probability: float) -> str:
 
 
 def map_phred33_ascii_to_qualityscore(phred33_char: str) -> float:
-    """Maps a ASCII phred33 quality character to a quality score"""
+    """Maps a ASCII phred33 quality character to a quality score
+    >>> map_phred33_ascii_to_qualityscore("#")
+    2
+    >>> map_phred33_ascii_to_qualityscore("J")
+    41
+    """
     return ord(phred33_char) - 33
 
 
@@ -140,6 +180,12 @@ def same_length_reads(reads: List[str]) -> bool:
     """
     Returns true if the list of sequencing reads has at least one sequence read and
     each of the reads has the same length, False otherwise
+    >>> same_length_reads(["AACGTTA"])
+    True
+    >>> same_length_reads(["AACGTTA", "CGCGTTT"])
+    True
+    >>> same_length_reads(["AACGTTA", "CGCGTTT", "GTTAC"])
+    False
     """
     assert len(reads) > 0
     lengths = [len(read) for read in reads]
@@ -164,6 +210,10 @@ def find_GC_by_position(reads: List[str]) -> np.ndarray:
 def get_base_freq(reads: List[str]):
     """
     Returns the aggregate frequency of bases in the sequencing reads
+    >>> get_base_freq(["NAACGTTA"])
+    Counter({'A': 3, 'T': 2, 'N': 1, 'C': 1, 'G': 1})
+    >>> get_base_freq(["AACGTTA", "CGCGTTT"])
+    Counter({'T': 5, 'A': 3, 'C': 3, 'G': 3})
     """
     concatenated_reads = "".join(reads)
     return Counter(concatenated_reads)

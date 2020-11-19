@@ -42,6 +42,16 @@ def get_alignments_skipped_bad_char_rule(
 ) -> int:
     """Get the number of alignments that can be skipped according to bad
     character rule in Boyer Moore's exact matching algorithm
+    >>> get_alignments_skipped_bad_char_rule("C", "ATCTTTATCATA")
+    3
+    >>> get_alignments_skipped_bad_char_rule("G", "ATCTTTATCATA")
+    12
+    >>> get_alignments_skipped_bad_char_rule("T", "GTAGCGGC")
+    6
+    >>> get_alignments_skipped_bad_char_rule("C", "GTAGC")
+    0
+    >>> get_alignments_skipped_bad_char_rule("C", "GT")
+    2
     """
     reverse_pattern_prefix = pattern_prefix[::-1]  # checking from right to left
     len_pattern_prefix = len(pattern_prefix)
@@ -54,6 +64,16 @@ def get_alignments_skipped_bad_char_rule(
 def get_alignments_skipped_good_suffix_rule(matched_suffix: str, pattern: str) -> int:
     """Get the number of alignments that can be skipped according to good
     suffix rule in Boyer Moore's exact matching algorithm
+    >>> get_alignments_skipped_good_suffix_rule("", "GTAGCGGCG")
+    0
+    >>> get_alignments_skipped_good_suffix_rule("GCG", "GTAGCGGCG")
+    2
+    >>> get_alignments_skipped_good_suffix_rule("GCGGCG", "GTAGCGGCG")
+    7
+    >>> get_alignments_skipped_good_suffix_rule("TAC", "CTTACTTAC")
+    3
+    >>> get_alignments_skipped_good_suffix_rule("TACTTAC", "CTTACTTAC")
+    3
     """
     len_pattern = len(pattern)
     for i in range(len_pattern - 1, 0, -1):
