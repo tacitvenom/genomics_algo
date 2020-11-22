@@ -151,3 +151,30 @@ def get_occurences_with_boyer_moore_exact_matching(
                 occurences.append(index)
             index += 1
     return occurences
+
+
+def find_most_freq_k_substring(text: str, k: int):
+    """
+    Find the most frequent substring of length k in a given text
+    >>> find_most_freq_k_substring("GTACGTACC", 1)
+    (['C'], 3)
+    >>> find_most_freq_k_substring("GTACGTACC", 2)
+    (['GT', 'TA', 'AC'], 2)
+    >>> find_most_freq_k_substring("GTACGTACC", 4)
+    (['GTAC'], 2)
+    >>> find_most_freq_k_substring("GTACGTACC", 6)
+    (['GTACGT', 'TACGTA', 'ACGTAC', 'CGTACC'], 1)
+    """
+    assert k > 0
+    assert len(text) > 0
+
+    freq_map = {}
+    for index in range(len(text) - k + 1):
+        substr = text[index : index + k]
+        if substr in freq_map:
+            freq_map[substr] += 1
+        else:
+            freq_map[substr] = 1
+    frequency = max(freq_map.values())
+    frequent_substrings = [key for key, value in freq_map.items() if value == frequency]
+    return frequent_substrings, frequency

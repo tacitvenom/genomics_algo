@@ -6,6 +6,7 @@ from genomics_algo.algorithms import (
     _get_alignments_skipped_gs_lookup,
     _get_alignments_skipped_bc_lookup,
     get_occurences_with_boyer_moore_exact_matching,
+    find_most_freq_k_substring,
 )
 
 
@@ -171,3 +172,12 @@ def test__get_alignments_skipped_bc_lookup():
         },
     }
     assert _get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup
+
+
+def test_find_most_freq_k_substring():
+    with pytest.raises(AssertionError):
+        find_most_freq_k_substring("", 1)
+    with pytest.raises(AssertionError):
+        find_most_freq_k_substring("GTACGTACC", 0)
+    with pytest.raises(AssertionError):
+        find_most_freq_k_substring("GTACGTACC", -2)
