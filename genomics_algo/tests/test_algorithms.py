@@ -40,6 +40,31 @@ def test_get_occurences_with_exact_match(exact_matching_algo):
     assert result == [2, 4, 10]
 
 
+def test_get_occurences_in_entire_genome_with_exact_match():
+    text = read_genome("genomics_algo/tests/test_data/vibrio_cholerae.txt")
+    pattern = "ATGATCAAG"
+    result = get_occurences_with_boyer_moore_exact_matching(pattern, text)
+    assert result == [
+        116556,
+        149355,
+        151913,
+        152013,
+        152394,
+        186189,
+        194276,
+        200076,
+        224527,
+        307692,
+        479770,
+        610980,
+        653338,
+        679985,
+        768828,
+        878903,
+        985368,
+    ]
+
+
 @pytest.mark.parametrize(
     "exact_matching_algo",
     [get_occurences_with_naive_match, get_occurences_with_boyer_moore_exact_matching],
