@@ -1,6 +1,10 @@
 from typing import List, Dict
 
-from genomics_algo.helper import reverse_complement, longest_common_suffix
+from genomics_algo.helper import (
+    get_frequency_map,
+    reverse_complement,
+    longest_common_suffix,
+)
 
 
 def get_occurences_with_naive_match(pattern: str, text: str) -> List[int]:
@@ -165,16 +169,7 @@ def find_most_freq_k_substring(text: str, k: int):
     >>> find_most_freq_k_substring("GTACGTACC", 6)
     (['GTACGT', 'TACGTA', 'ACGTAC', 'CGTACC'], 1)
     """
-    assert k > 0
-    assert len(text) > 0
-
-    freq_map = {}
-    for index in range(len(text) - k + 1):
-        substr = text[index : index + k]
-        if substr in freq_map:
-            freq_map[substr] += 1
-        else:
-            freq_map[substr] = 1
+    freq_map = get_frequency_map(text=text, k=k)
     frequency = max(freq_map.values())
     frequent_substrings = [key for key, value in freq_map.items() if value == frequency]
     return frequent_substrings, frequency

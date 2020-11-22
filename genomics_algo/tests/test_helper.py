@@ -13,6 +13,7 @@ from genomics_algo.helper import (
     same_length_reads,
     find_GC_by_position,
     generate_artificial_reads,
+    get_frequency_map,
 )
 
 DELTA = 10e-4
@@ -150,3 +151,12 @@ def test_generate_artificial_reads():
 
     for read in reads:
         assert read in genome
+
+
+def test_get_frequency_map():
+    with pytest.raises(AssertionError):
+        get_frequency_map("", 1)
+    with pytest.raises(AssertionError):
+        get_frequency_map("GTACGTACC", 0)
+    with pytest.raises(AssertionError):
+        get_frequency_map("GTACGTACC", -2)

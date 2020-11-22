@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 from collections import Counter
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 
 class Bases:
@@ -228,3 +228,28 @@ def generate_artificial_reads(
         start_position = random.randint(0, len(genome) - read_length + 1)
         reads.append(genome[start_position : start_position + read_length + 1])
     return reads
+
+
+def get_frequency_map(text: str, k: int) -> Dict[str, int]:
+    """
+    Find the frequency of all substring of length k in a given text
+    >>> get_frequency_map("GTACGTACC", 1)
+    {'G': 2, 'T': 2, 'A': 2, 'C': 3}
+    >>> get_frequency_map("GTACGTACC", 2)
+    {'GT': 2, 'TA': 2, 'AC': 2, 'CG': 1, 'CC': 1}
+    >>> get_frequency_map("GTACGTACC", 4)
+    {'GTAC': 2, 'TACG': 1, 'ACGT': 1, 'CGTA': 1, 'TACC': 1}
+    >>> get_frequency_map("GTACGTACC", 6)
+    {'GTACGT': 1, 'TACGTA': 1, 'ACGTAC': 1, 'CGTACC': 1}
+    """
+    assert k > 0
+    assert len(text) > 0
+
+    freq_map = {}
+    for index in range(len(text) - k + 1):
+        substr = text[index : index + k]
+        if substr in freq_map:
+            freq_map[substr] += 1
+        else:
+            freq_map[substr] = 1
+    return freq_map
