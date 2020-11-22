@@ -3,8 +3,8 @@ from genomics_algo.helper import read_genome
 from genomics_algo.algorithms import (
     get_occurences_with_naive_match,
     get_occurences_with_exact_match_with_reverse_complement,
-    get_alignments_skipped_gs_lookup,
-    get_alignments_skipped_bc_lookup,
+    _get_alignments_skipped_gs_lookup,
+    _get_alignments_skipped_bc_lookup,
     get_occurences_with_boyer_moore_exact_matching,
 )
 
@@ -75,9 +75,9 @@ def test_get_occurences_with_exact_match_with_reverse_complement(exact_matching_
     assert len(result) == 60
 
 
-def test_get_alignments_skipped_gs_lookup():
+def test__get_alignments_skipped_gs_lookup():
     pattern = ""
-    assert get_alignments_skipped_gs_lookup(pattern) == {}
+    assert _get_alignments_skipped_gs_lookup(pattern) == {}
 
     pattern = "GTAGCGGCG"
     expected_lookup = {
@@ -91,12 +91,12 @@ def test_get_alignments_skipped_gs_lookup():
         "AGCGGCG": 7,
         "TAGCGGCG": 7,
     }
-    assert get_alignments_skipped_gs_lookup(pattern) == expected_lookup
+    assert _get_alignments_skipped_gs_lookup(pattern) == expected_lookup
 
 
-def test_get_alignments_skipped_bc_lookup():
+def test__get_alignments_skipped_bc_lookup():
     pattern = ""
-    assert get_alignments_skipped_bc_lookup(pattern=pattern) == {}
+    assert _get_alignments_skipped_bc_lookup(pattern=pattern) == {}
 
     pattern = "GTAGCGGCG"
     expected_lookup = {
@@ -145,4 +145,4 @@ def test_get_alignments_skipped_bc_lookup():
             "GTAGCGGC": 6,
         },
     }
-    assert get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup
+    assert _get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup
