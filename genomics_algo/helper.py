@@ -230,9 +230,9 @@ def generate_artificial_reads(
     return reads
 
 
-def get_frequency_map(text: str, k: int) -> Dict[str, int]:
+def get_frequency_map(text: str, substring_length: int) -> Dict[str, int]:
     """
-    Find the frequency of all substring of length k in a given text
+    Find the frequency of all substring of length in a given text
     >>> get_frequency_map("GTACGTACC", 1)
     {'G': 2, 'T': 2, 'A': 2, 'C': 3}
     >>> get_frequency_map("GTACGTACC", 2)
@@ -242,12 +242,12 @@ def get_frequency_map(text: str, k: int) -> Dict[str, int]:
     >>> get_frequency_map("GTACGTACC", 6)
     {'GTACGT': 1, 'TACGTA': 1, 'ACGTAC': 1, 'CGTACC': 1}
     """
-    assert k > 0
+    assert substring_length > 0
     assert len(text) > 0
 
     freq_map = {}
-    for index in range(len(text) - k + 1):
-        substr = text[index : index + k]
+    for index in range(len(text) - substring_length + 1):
+        substr = text[index : index + substring_length]
         if substr in freq_map:
             freq_map[substr] += 1
         else:

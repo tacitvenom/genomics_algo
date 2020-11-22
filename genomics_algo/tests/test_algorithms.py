@@ -6,6 +6,7 @@ from genomics_algo.algorithms import (
     _get_alignments_skipped_gs_lookup,
     _get_alignments_skipped_bc_lookup,
     get_occurences_with_boyer_moore_exact_matching,
+    find_clumps,
 )
 
 
@@ -40,10 +41,17 @@ def test_get_occurences_with_exact_match(exact_matching_algo):
     assert result == [2, 4, 10]
 
 
-def test_get_occurences_in_entire_genome_with_exact_match():
+@pytest.mark.skip(reason="Overhead of 2-3 seconds")
+@pytest.mark.parametrize(
+    "exact_matching_algo",
+    [get_occurences_with_naive_match, get_occurences_with_boyer_moore_exact_matching],
+)
+def test_get_occurences_in_entire_genome_with_boyer_moores_exact_match(
+    exact_matching_algo,
+):
     text = read_genome("genomics_algo/tests/test_data/vibrio_cholerae.txt")
     pattern = "ATGATCAAG"
-    result = get_occurences_with_boyer_moore_exact_matching(pattern, text)
+    result = exact_matching_algo(pattern, text)
     assert result == [
         116556,
         149355,
@@ -171,3 +179,26 @@ def test__get_alignments_skipped_bc_lookup():
         },
     }
     assert _get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup
+
+
+@pytest.mark.skip(reason="Takes incredibly 3-4 mins in current implementation")
+def test_find_clumps_with_genome():
+    text = read_genome("genomics_algo/tests/test_data/e_coli.txt")
+    patterns = find_clumps(
+        text=text, substring_length=9, window_length=500, minimum_frequency=3
+    )
+    assert len(patterns) == 665
+
+
+def test_find_clumps():
+    text = "GACAGAC"
+    patterns = find_clumps(
+        text=text, substring_length=3, window_length=7, minimum_frequency=2
+    )
+    assert patterns == {"GAC"}
+
+    text = "GACCTACCGTATACGCCGACGACTTACTACATGCATGTAC"
+    patterns = find_clumps(
+        text=text, substring_length=3, window_length=16, minimum_frequency=3
+    )
+    assert patterns == {"TAC"}

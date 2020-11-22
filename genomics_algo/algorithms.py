@@ -157,9 +157,9 @@ def get_occurences_with_boyer_moore_exact_matching(
     return occurences
 
 
-def find_most_freq_k_substring(text: str, k: int):
+def find_most_freq_k_substring(text: str, substring_length: int):
     """
-    Find the most frequent substring of length k in a given text
+    Find the most frequent substring of length in a given text
     >>> find_most_freq_k_substring("GTACGTACC", 1)
     (['C'], 3)
     >>> find_most_freq_k_substring("GTACGTACC", 2)
@@ -169,7 +169,20 @@ def find_most_freq_k_substring(text: str, k: int):
     >>> find_most_freq_k_substring("GTACGTACC", 6)
     (['GTACGT', 'TACGTA', 'ACGTAC', 'CGTACC'], 1)
     """
-    freq_map = get_frequency_map(text=text, k=k)
+    freq_map = get_frequency_map(text=text, substring_length=substring_length)
     frequency = max(freq_map.values())
     frequent_substrings = [key for key, value in freq_map.items() if value == frequency]
     return frequent_substrings, frequency
+
+
+def find_clumps(
+    text: str, substring_length: int, window_length: int, minimum_frequency: int
+):
+    patterns = set()
+    for index in range(len(text) - window_length + 1):
+        window = text[index : index + window_length]
+        freq_map = get_frequency_map(text=window, substring_length=substring_length)
+        for key, value in freq_map.items():
+            if value >= minimum_frequency:
+                patterns.add(key)
+    return patterns
