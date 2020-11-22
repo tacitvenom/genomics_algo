@@ -4,6 +4,7 @@ from genomics_algo.algorithms import (
     get_occurences_with_naive_match,
     get_occurences_with_exact_match_with_reverse_complement,
     get_alignments_skipped_gs_lookup,
+    get_alignments_skipped_bc_lookup,
     get_occurences_with_boyer_moore_exact_matching,
 )
 
@@ -77,6 +78,7 @@ def test_get_occurences_with_exact_match_with_reverse_complement(exact_matching_
 def test_get_alignments_skipped_gs_lookup():
     pattern = ""
     assert get_alignments_skipped_gs_lookup(pattern) == {}
+
     pattern = "GTAGCGGCG"
     expected_lookup = {
         "": 0,
@@ -90,3 +92,57 @@ def test_get_alignments_skipped_gs_lookup():
         "TAGCGGCG": 7,
     }
     assert get_alignments_skipped_gs_lookup(pattern) == expected_lookup
+
+
+def test_get_alignments_skipped_bc_lookup():
+    pattern = ""
+    assert get_alignments_skipped_bc_lookup(pattern=pattern) == {}
+
+    pattern = "GTAGCGGCG"
+    expected_lookup = {
+        "A": {
+            "": 0,
+            "G": 1,
+            "GT": 2,
+            "GTA": 0,
+            "GTAG": 1,
+            "GTAGC": 2,
+            "GTAGCG": 3,
+            "GTAGCGG": 4,
+            "GTAGCGGC": 5,
+        },
+        "C": {
+            "": 0,
+            "G": 1,
+            "GT": 2,
+            "GTA": 3,
+            "GTAG": 4,
+            "GTAGC": 0,
+            "GTAGCG": 1,
+            "GTAGCGG": 2,
+            "GTAGCGGC": 0,
+        },
+        "G": {
+            "": 0,
+            "G": 0,
+            "GT": 1,
+            "GTA": 2,
+            "GTAG": 0,
+            "GTAGC": 1,
+            "GTAGCG": 0,
+            "GTAGCGG": 0,
+            "GTAGCGGC": 1,
+        },
+        "T": {
+            "": 0,
+            "G": 1,
+            "GT": 0,
+            "GTA": 1,
+            "GTAG": 2,
+            "GTAGC": 3,
+            "GTAGCG": 4,
+            "GTAGCGG": 5,
+            "GTAGCGGC": 6,
+        },
+    }
+    assert get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup

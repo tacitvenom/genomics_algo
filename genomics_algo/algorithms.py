@@ -100,6 +100,25 @@ def get_alignments_skipped_gs_lookup(pattern: str) -> dict:
     return gs_lookup
 
 
+def get_alignments_skipped_bc_lookup(pattern: str) -> dict:
+    """Get the number of alignments that can be skipped according to bad
+    character rule in Boyer Moore's exact matching algorithm for each possible
+    character of the string with every possible prefix of a pattern in a dictionary
+    of dictionaries
+    """
+    bc_lookup = {}
+    unique_characters_in_pattern = set(pattern)
+    for character in unique_characters_in_pattern:
+        char_lookup = {}
+        for index in range(len(pattern)):
+            prefix = pattern[:index]
+            char_lookup[prefix] = get_alignments_skipped_bad_char_rule(
+                mismatched_char=character, pattern_prefix=prefix
+            )
+        bc_lookup[character] = char_lookup
+    return bc_lookup
+
+
 def get_occurences_with_boyer_moore_exact_matching(
     pattern: str, text: str
 ) -> List[int]:
