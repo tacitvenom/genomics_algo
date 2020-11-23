@@ -200,6 +200,7 @@ def find_GC_by_position(reads: List[str]) -> np.ndarray:
     reads_length = len(reads[0])
     gc = np.zeros(reads_length)
     for read in reads:
+        assert set(read) - {"A", "C", "G", "T", "N"} == set()
         for index, base in enumerate(read):
             if base in ["G", "C"]:
                 gc[index] += 1

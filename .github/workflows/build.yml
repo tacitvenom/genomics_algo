@@ -31,9 +31,8 @@ jobs:
           pip install -r reqs.txt
           pip install -e .
       - name: Run tests
-        run: py.test --doctest-modules genomics_algo/tests/
+        run: py.test --doctest-modules -vv genomics_algo/
       - name: Formatting with black
         run: |
           pip install black
           black --check genomics_algo/
-      

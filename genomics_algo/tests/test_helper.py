@@ -129,6 +129,9 @@ def test_find_GC_by_position():
     with pytest.raises(AssertionError):
         find_GC_by_position(reads)
 
+    with pytest.raises(AssertionError):
+        find_GC_by_position(["ACGTNO"])
+
     reads = ["AACGTTA", "CGCGTTT", "GTTAC"]
     with pytest.raises(AssertionError):
         find_GC_by_position(reads)

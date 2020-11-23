@@ -1,4 +1,6 @@
-from typing import List, Dict
+import numpy as np
+
+from typing import Dict, List, Tuple
 
 from genomics_algo.helper import (
     get_frequency_map,
@@ -157,7 +159,9 @@ def get_occurences_with_boyer_moore_exact_matching(
     return occurences
 
 
-def find_most_freq_k_substring(text: str, substring_length: int):
+def find_most_freq_k_substring(
+    text: str, substring_length: int
+) -> Tuple[List[str], int]:
     """
     Find the most frequent substring of length in a given text
     >>> find_most_freq_k_substring("GTACGTACC", 1)
@@ -175,7 +179,7 @@ def find_most_freq_k_substring(text: str, substring_length: int):
     return frequent_substrings, frequency
 
 
-def find_clumps(
+def find_pattern_clumps(
     text: str, substring_length: int, window_length: int, minimum_frequency: int
 ):
     patterns = set()
@@ -186,3 +190,13 @@ def find_clumps(
             if value >= minimum_frequency:
                 patterns.add(key)
     return patterns
+
+
+def find_minimum_gc_skew_location(genome: str) -> int:
+    assert set(genome) - {"A", "C", "G", "T"} == set()
+    gc_skew = np.zeros(len(genome) + 1)
+    for index in range(len(genome)):
+        gc_skew[index + 1] = gc_skew[index]
+        gc_skew[index + 1] += genome[index] == "G"
+        gc_skew[index + 1] -= genome[index] == "C"
+    return np.where(gc_skew == gc_skew.min())[0] - 1

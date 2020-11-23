@@ -1,4 +1,6 @@
+import numpy as np
 import pytest
+
 from genomics_algo.helper import read_genome
 from genomics_algo.algorithms import (
     get_occurences_with_naive_match,
@@ -6,7 +8,8 @@ from genomics_algo.algorithms import (
     _get_alignments_skipped_gs_lookup,
     _get_alignments_skipped_bc_lookup,
     get_occurences_with_boyer_moore_exact_matching,
-    find_clumps,
+    find_pattern_clumps,
+    find_minimum_gc_skew_location,
 )
 
 
@@ -181,24 +184,39 @@ def test__get_alignments_skipped_bc_lookup():
     assert _get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup
 
 
-@pytest.mark.skip(reason="Takes incredibly 3-4 mins in current implementation")
-def test_find_clumps_with_genome():
+@pytest.mark.skip(reason="Takes 3-4 mins in current implementation")
+def test_find_pattern_clumps_with_genome():
     text = read_genome("genomics_algo/tests/test_data/e_coli.txt")
-    patterns = find_clumps(
+    patterns = find_pattern_clumps(
         text=text, substring_length=9, window_length=500, minimum_frequency=3
     )
     assert len(patterns) == 665
 
 
-def test_find_clumps():
+def test_find_pattern_clumps():
     text = "GACAGAC"
-    patterns = find_clumps(
+    patterns = find_pattern_clumps(
         text=text, substring_length=3, window_length=7, minimum_frequency=2
     )
     assert patterns == {"GAC"}
 
     text = "GACCTACCGTATACGCCGACGACTTACTACATGCATGTAC"
-    patterns = find_clumps(
+    patterns = find_pattern_clumps(
         text=text, substring_length=3, window_length=16, minimum_frequency=3
     )
     assert patterns == {"TAC"}
+
+
+def test_find_minimum_gc_skew_location():
+    genome = "CATGGGCATCGGCCATACGCCGAATA"
+    assert find_minimum_gc_skew_location(genome) == 20
+    genome = "CATGGGCATCGGCCATACGCCGAATACGA"
+    result = find_minimum_gc_skew_location(genome)
+    np.testing.assert_array_equal([20, 26], result)
+
+
+@pytest.mark.skip(reason="Takes about 30s in current implementation")
+def test_find_minimum_gc_skew_location_in_genome():
+    genome = read_genome("genomics_algo/tests/test_data/e_coli.txt")
+    result = find_minimum_gc_skew_location(genome)
+    np.testing.assert_array_equal([3923619, 3923620, 3923621, 3923622], result)
