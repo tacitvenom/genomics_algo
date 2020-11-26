@@ -254,3 +254,20 @@ def get_frequency_map(text: str, substring_length: int) -> Dict[str, int]:
         else:
             freq_map[substr] = 1
     return freq_map
+
+
+def find_hamming_distance(s1: str, s2: str) -> int:
+    """Compute the Hamming distance between two strings of equal length
+    >>> find_hamming_distance("ATG", "ATC")
+    1
+    >>> find_hamming_distance("ATG", "TGA")
+    3
+    >>> find_hamming_distance("A", "A")
+    0
+    >>> find_hamming_distance("ATG", "ATG")
+    0
+    >>> find_hamming_distance("", "")
+    0
+    """
+    assert len(s1) == len(s2)
+    return sum(1 for i in range(len(s1)) if s1[i] != s2[i])

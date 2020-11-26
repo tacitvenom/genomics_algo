@@ -14,6 +14,7 @@ from genomics_algo.helper import (
     find_GC_by_position,
     generate_artificial_reads,
     get_frequency_map,
+    find_hamming_distance,
 )
 
 DELTA = 10e-4
@@ -163,3 +164,8 @@ def test_get_frequency_map():
         get_frequency_map("GTACGTACC", 0)
     with pytest.raises(AssertionError):
         get_frequency_map("GTACGTACC", -2)
+
+
+def test_find_hamming_distance():
+    with pytest.raises(AssertionError):
+        find_hamming_distance("A", "ATG")
