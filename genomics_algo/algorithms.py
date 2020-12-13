@@ -179,16 +179,51 @@ def find_most_freq_k_substring(
     return frequent_substrings, frequency
 
 
+# def find_pattern_clumps(
+#     text: str, substring_length: int, window_length: int, minimum_frequency: int
+# ):
+#     patterns = set()
+#     for index in range(len(text) - window_length + 1):
+#         window = text[index : index + window_length]
+#         freq_map = get_frequency_map(text=window, substring_length=substring_length)
+#         for key, value in freq_map.items():
+#             if value >= minimum_frequency:
+#                 patterns.add(key)
+#     return patterns
+
+
 def find_pattern_clumps(
     text: str, substring_length: int, window_length: int, minimum_frequency: int
 ):
     patterns = set()
-    for index in range(len(text) - window_length + 1):
+    window = text[:window_length]
+    initial_substring = window[:substring_length]
+    freq_map = get_frequency_map(text=window, substring_length=substring_length)
+    for key, value in freq_map.items():
+        if value >= minimum_frequency:
+            patterns.add(key)
+    print("0", freq_map)
+    for index in range(1, len(text) - window_length + 1):
         window = text[index : index + window_length]
-        freq_map = get_frequency_map(text=window, substring_length=substring_length)
+        previous_freq_map = freq_map.copy()
+        freq_map = {}
+        last_substring = window[::-1][:substring_length][
+            ::-1
+        ]  # last `substring_length` characters
+        for key, value in previous_freq_map.items():
+            if key == initial_substring:
+                freq_map[key] = previous_freq_map[key] - 1
+            elif key == last_substring:
+                freq_map[key] = previous_freq_map[key] + 1
+            else:
+                freq_map[key] = previous_freq_map[key]
+        if last_substring not in freq_map:
+            freq_map[last_substring] = 1
         for key, value in freq_map.items():
             if value >= minimum_frequency:
                 patterns.add(key)
+        initial_substring = window[:substring_length]
+        # print(index, freq_map)
     return patterns
 
 
