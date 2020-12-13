@@ -184,7 +184,7 @@ def test__get_alignments_skipped_bc_lookup():
     assert _get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup
 
 
-@pytest.mark.skip(reason="Takes 3-4 mins in current implementation")
+# @pytest.mark.skip(reason="Takes 3-4 mins in current implementation")
 def test_find_pattern_clumps_with_genome():
     text = read_genome("genomics_algo/tests/test_data/e_coli.txt")
     patterns = find_pattern_clumps(
