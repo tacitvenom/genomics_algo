@@ -190,7 +190,7 @@ def test_find_pattern_clumps_with_genome():
     patterns = find_pattern_clumps(
         text=text, substring_length=9, window_length=500, minimum_frequency=3
     )
-    assert len(patterns) == 665
+    assert len(patterns) == 1904
 
 
 def test_find_pattern_clumps():
