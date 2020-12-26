@@ -184,7 +184,7 @@ def test__get_alignments_skipped_bc_lookup():
     assert _get_alignments_skipped_bc_lookup(pattern=pattern) == expected_lookup
 
 
-@pytest.mark.skip(reason="Takes 3-4 mins in current implementation")
+@pytest.mark.skip(reason="Takes 10-15 mins in current implementation")
 def test_find_pattern_clumps_with_genome():
     text = read_genome("genomics_algo/tests/test_data/e_coli.txt")
     patterns = find_pattern_clumps(
@@ -193,7 +193,7 @@ def test_find_pattern_clumps_with_genome():
     assert len(patterns) == 1904
 
 
-def test_find_pattern_clumps():
+def test_find_pattern_clumps_short():
     text = "GACAGAC"
     patterns = find_pattern_clumps(
         text=text, substring_length=3, window_length=7, minimum_frequency=2
@@ -201,6 +201,15 @@ def test_find_pattern_clumps():
     assert patterns == {"GAC"}
 
     text = "GACCTACCGTATACGCCGACGACTTACTACATGCATGTAC"
+    patterns = find_pattern_clumps(
+        text=text, substring_length=3, window_length=16, minimum_frequency=3
+    )
+    assert patterns == {"TAC"}
+
+
+@pytest.mark.skip(reason="Takes 20-25 seconds in current implementation")
+def test_find_pattern_clumps_long():
+    text = "GACCTACCGTATACGCCGACGACTTACTACATGCATGTAC" * 100_000
     patterns = find_pattern_clumps(
         text=text, substring_length=3, window_length=16, minimum_frequency=3
     )
