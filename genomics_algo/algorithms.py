@@ -195,13 +195,13 @@ def find_most_freq_k_substring(
 def find_pattern_clumps(
     text: str, substring_length: int, window_length: int, minimum_frequency: int
 ):
-    patterns = set()
     window = text[:window_length]
     initial_substring = window[:substring_length]
     freq_map = get_frequency_map(text=window, substring_length=substring_length)
-    for key, value in freq_map.items():
-        if value >= minimum_frequency:
-            patterns.add(key)
+    patterns = {
+        key for key, value in freq_map.items() if value >= minimum_frequency
+    }
+
     print("0", freq_map)
     for index in range(1, len(text) - window_length + 1):
         window = text[index : index + window_length]
