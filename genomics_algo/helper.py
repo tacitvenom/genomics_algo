@@ -1,3 +1,4 @@
+import doctest
 import math
 import numpy as np
 import random
@@ -268,6 +269,54 @@ def find_hamming_distance(s1: str, s2: str) -> int:
     0
     >>> find_hamming_distance("", "")
     0
+    >>> find_hamming_distance("GAGGTAGCGGCGTTTAAC", "GTGGTAACGGGGTTTAAC")
+    3
     """
     assert len(s1) == len(s2)
     return sum(1 for i in range(len(s1)) if s1[i] != s2[i])
+
+
+def find_levenshtein_distance(s1: str, s2: str) -> int:
+    """Compute the Levenshtein distance between two strings (i.e., minimum number
+    of edits including substitution, insertion and deletion needed in a string to
+    turn it into another)
+    >>> find_levenshtein_distance("AT", "")
+    2
+    >>> find_levenshtein_distance("AT", "ATC")
+    1
+    >>> find_levenshtein_distance("ATG", "ATC")
+    1
+    >>> find_levenshtein_distance("ATG", "TGA")
+    2
+    >>> find_levenshtein_distance("ATG", "ATG")
+    0
+    >>> find_levenshtein_distance("", "")
+    0
+    >>> find_levenshtein_distance("GAGGTAGCGGCGTTTAAC", "GTGGTAACGGGGTTTAAC")
+    3
+    >>> find_levenshtein_distance("TGGCCGCGCAAAAACAGC", "TGACCGCGCAAAACAGC")
+    2
+    >>> find_levenshtein_distance("GCGTATGCGGCTAACGC", "GCTATGCGGCTATACGC")
+    2
+    """
+    # initializing a matrix for with `len(s1) + 1` rows and `len(s2) + 1` columns
+    D = [[0 for x in range(len(s2) + 1)] for y in range(len(s1) + 1)]
+
+    # fill first column
+    for i in range(len(s1) + 1):
+        D[i][0] = i
+    # fill first row
+    for j in range(len(s2) + 1):
+        D[0][j] = j
+
+    # fill rest of the matrix
+    for i in range(1, len(s1) + 1):
+        for j in range(1, len(s2) + 1):
+            distLeft = D[i][j - 1] + 1
+            distAbove = D[i - 1][j] + 1
+            # import pdb; pdb.set_trace()
+            distDiagonal = D[i - 1][j - 1] + (s1[i - 1] != s2[j - 1])
+            D[i][j] = min(distLeft, distAbove, distDiagonal)
+
+    # return the last value (i.e., right most bottom value)
+    return D[-1][-1]
