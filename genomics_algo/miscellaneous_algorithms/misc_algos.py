@@ -28,6 +28,11 @@ def find_most_freq_k_substring(
 def find_pattern_clumps(
     text: str, substring_length: int, window_length: int, minimum_frequency: int
 ):
+    """TODO: [summary]
+
+    Returns:
+        [type]: [description]
+    """
     patterns = set()
     for index in range(len(text) - window_length + 1):
         window = text[index : index + window_length]
@@ -39,6 +44,11 @@ def find_pattern_clumps(
 
 
 def find_minimum_gc_skew_location(genome: str) -> int:
+    """TODO: [summary]
+
+    Returns:
+        [type]: [description]
+    """
     assert set(genome) - {"A", "C", "G", "T"} == set()
     gc_skew = np.zeros(len(genome) + 1)
     for index in range(len(genome)):
