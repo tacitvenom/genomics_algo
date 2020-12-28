@@ -1,46 +1,6 @@
-import numpy as np
+from typing import Dict, List
 
-from typing import Dict, List, Tuple
-
-from genomics_algo.helper import (
-    get_frequency_map,
-    reverse_complement,
-    longest_common_suffix,
-)
-
-
-def get_occurences_with_naive_match(pattern: str, text: str) -> List[int]:
-    """Get indices of all occurences of the string `pattern` in the
-    string `text` using naive matching
-    """
-    occurences = []
-    len_pattern = len(pattern)
-    len_text = len(text)
-    if len_pattern <= len_text:
-        for index in range(len_text - len_pattern + 1):
-            match = all(
-                pattern[offset] == text[index + offset] for offset in range(len_pattern)
-            )
-
-            if match:
-                occurences.append(index)
-
-    return occurences
-
-
-def get_occurences_with_exact_match_with_reverse_complement(
-    pattern: str, text: str, exact_matching_algo: callable
-) -> List[int]:
-    """Get indices of all occurences of the DNA strand string `pattern` in the
-    string `text` using naive matching considering reverse complement of the
-    `pattern` string also
-    """
-    occurences = []
-    occurences += exact_matching_algo(pattern, text)
-    pattern_reverse_complement = reverse_complement(pattern)
-    if pattern_reverse_complement != pattern:
-        occurences += exact_matching_algo(pattern_reverse_complement, text)
-    return occurences
+from genomics_algo.utilities.string_cmp import longest_common_suffix
 
 
 def _get_alignments_skipped_bad_char_rule(
@@ -157,46 +117,3 @@ def get_occurences_with_boyer_moore_exact_matching(
                 occurences.append(index)
             index += 1
     return occurences
-
-
-def find_most_freq_k_substring(
-    text: str, substring_length: int
-) -> Tuple[List[str], int]:
-    """
-    Find the most frequent substring of length in a given text
-    >>> find_most_freq_k_substring("GTACGTACC", 1)
-    (['C'], 3)
-    >>> find_most_freq_k_substring("GTACGTACC", 2)
-    (['GT', 'TA', 'AC'], 2)
-    >>> find_most_freq_k_substring("GTACGTACC", 4)
-    (['GTAC'], 2)
-    >>> find_most_freq_k_substring("GTACGTACC", 6)
-    (['GTACGT', 'TACGTA', 'ACGTAC', 'CGTACC'], 1)
-    """
-    freq_map = get_frequency_map(text=text, substring_length=substring_length)
-    frequency = max(freq_map.values())
-    frequent_substrings = [key for key, value in freq_map.items() if value == frequency]
-    return frequent_substrings, frequency
-
-
-def find_pattern_clumps(
-    text: str, substring_length: int, window_length: int, minimum_frequency: int
-):
-    patterns = set()
-    for index in range(len(text) - window_length + 1):
-        window = text[index : index + window_length]
-        freq_map = get_frequency_map(text=window, substring_length=substring_length)
-        for key, value in freq_map.items():
-            if value >= minimum_frequency:
-                patterns.add(key)
-    return patterns
-
-
-def find_minimum_gc_skew_location(genome: str) -> int:
-    assert set(genome) - {"A", "C", "G", "T"} == set()
-    gc_skew = np.zeros(len(genome) + 1)
-    for index in range(len(genome)):
-        gc_skew[index + 1] = gc_skew[index]
-        gc_skew[index + 1] += genome[index] == "G"
-        gc_skew[index + 1] -= genome[index] == "C"
-    return np.where(gc_skew == gc_skew.min())[0] - 1
