@@ -1,0 +1,3 @@
+tasks:
+  - init: pip3 install -r reqs.txt
+    command: pip install -e .
