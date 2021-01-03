@@ -114,10 +114,12 @@ def find_levenshtein_distance(s1: str, s2: str) -> int:
     # fill rest of the matrix
     for i in range(1, len(s1) + 1):
         for j in range(1, len(s2) + 1):
-            distLeft = D[i][j - 1] + 1  # deletion in pattern
-            distAbove = D[i - 1][j] + 1  # insertion in pattern
-            distDiagonal = D[i - 1][j - 1] + (s1[i - 1] != s2[j - 1])  # substitution
-            D[i][j] = min(distLeft, distAbove, distDiagonal)
+            distance_left = D[i][j - 1] + 1  # deletion in pattern
+            distance_above = D[i - 1][j] + 1  # insertion in pattern
+            distance_diagonal = D[i - 1][j - 1] + (
+                s1[i - 1] != s2[j - 1]
+            )  # substitution
+            D[i][j] = min(distance_left, distance_above, distance_diagonal)
 
     # return the last value (i.e., right most bottom value)
     return D[-1][-1]

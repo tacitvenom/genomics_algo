@@ -10,11 +10,11 @@ def get_occurences_with_dynamic_programming(
     approximate matching (Levenshtein distance is used to count the number of mismatches i.e.,
     minimum number of edits including substitution, insertion and deletion needed in a string to
     turn it into another)
-    >>> get_occurences_with_dynamic_programming("GCGTATGC", "TATTGGCTATACGGTT", 1) # doctest: +SKIP
+    >>> get_occurences_with_dynamic_programming("GCGTATGC", "TATTGGCTATACGGTT", 1)
     []
-    >>> get_occurences_with_dynamic_programming("GCGTATGC", "TATTGGCTATACGGTT", 2) # doctest: +SKIP
+    >>> get_occurences_with_dynamic_programming("GCGTATGC", "TATTGGCTATACGGTT", 2)
     [5]
-    >>> get_occurences_with_dynamic_programming("ACT", "GACTACGGAGACT", 0) # doctest: +SKIP
+    >>> get_occurences_with_dynamic_programming("ACT", "GACTACGGAGACT", 0)
     [1, 10]
     """
     assert len(pattern) <= len(text)
@@ -32,12 +32,12 @@ def get_occurences_with_dynamic_programming(
     # fill rest of the matrix
     for i in range(1, len(pattern) + 1):
         for j in range(1, len(text) + 1):
-            distLeft = D[i][j - 1] + 1  # deletion in pattern
-            distAbove = D[i - 1][j] + 1  # insertion in pattern
-            distDiagonal = D[i - 1][j - 1] + (
+            distance_left = D[i][j - 1] + 1  # deletion in pattern
+            distance_above = D[i - 1][j] + 1  # insertion in pattern
+            distance_diagonal = D[i - 1][j - 1] + (
                 pattern[i - 1] != text[j - 1]
             )  # substitution
-            D[i][j] = min(distLeft, distAbove, distDiagonal)
+            D[i][j] = min(distance_left, distance_above, distance_diagonal)
 
     # minimum in the bottom-most row should be at most the value of `max_mismatches`
     if min(D[-1]) > max_mismatches:
@@ -48,7 +48,9 @@ def get_occurences_with_dynamic_programming(
             if mismatch_count <= max_mismatches:
                 occurence_end_indices.append(end_index)
 
-        occurences = _backtrace_approximate_match(D, occurence_end_indices)
+        occurences = _backtrace_approximate_match(
+            pattern=pattern, text=text, D=D, occurence_end_indices=occurence_end_indices
+        )
 
     return occurences
 
@@ -71,4 +73,21 @@ def _backtrace_approximate_match(
     Returns:
         List[int]: List of integers where the `pattern` approximately matches in the `text`
     """
-    raise NotImplementedError("Helper not implemented yet!")
+    occurence_start_indices = []
+    for occurence_end_index in occurence_end_indices:
+        i = len(D) - 1
+        j = occurence_end_index
+        while i > 0:
+            distance_value = D[i][j]
+            distance_left = D[i][j - 1]
+            distance_above = D[i - 1][j]
+            distance_diagonal = D[i - 1][j - 1]
+            if distance_value == distance_above + 1:
+                i -= 1
+            elif distance_value == distance_left + 1:
+                j -= 1
+            elif distance_value == distance_diagonal + (pattern[i - 1] != text[j - 1]):
+                i -= 1
+                j -= 1
+        occurence_start_indices.append(j)
+    return occurence_start_indices
