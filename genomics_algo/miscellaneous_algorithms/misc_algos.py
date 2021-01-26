@@ -1,8 +1,13 @@
+from itertools import product
 import numpy as np
 
-from typing import List, Tuple
+from typing import List, Set, Tuple
 
-from genomics_algo.utilities.misc_utilities import get_frequency_map
+from genomics_algo.utilities.misc_utilities import (
+    get_frequency_map,
+    validate_bases_in_genome,
+)
+from genomics_algo.utilities.string_cmp import find_hamming_distance
 
 
 def find_most_freq_k_substring(
@@ -56,3 +61,57 @@ def find_minimum_gc_skew_location(genome: str) -> int:
         gc_skew[index + 1] += genome[index] == "G"
         gc_skew[index + 1] -= genome[index] == "C"
     return np.where(gc_skew == gc_skew.min())[0] - 1
+
+
+def find_frequent_kmers_with_mismatches(genome: str, k: int, d: int) -> Set[str]:
+    """Determine most frequent k-mers with at most `d` mismatches.
+    A most frequent k-mer with up to `d` mismatches in `genome` is simply a string pattern maximising
+    the total number of occurrences of said pattern in `genome` with at most `d` mismatches.
+    Note that the pattern does not need to actually appear as a substring of `genome`.
+    >>> find_frequent_kmers_with_mismatches('ACGTTGCATGTCGCATGATGCATGAGAGCT', 4, 1)-{'ATGC', 'GATG', 'ATGT'}
+    set()
+
+    Parameters
+    ----------
+    genome : str
+        String representation of genome.
+    k: int
+        Length of kmers to find.
+    d: int
+        Number of allowed mismatches in kmers.
+
+    Returns
+    -------
+    Set[str]
+        Set of most frequent kmers with up to d mismatches
+    """
+
+    n = len(genome)
+    chars = {"A", "C", "G", "T"}
+    # input validation:
+    validate_bases_in_genome(genome)
+    if n < k or k < d or d < 0:
+        raise ValueError(
+            f"The input values for genome, k and d don't make sense. It must hold: len(genome)>=k, k>=d, d>=0. Received: len(genome)={n}, k={k}, d={d}."
+        )
+    if k > 12 or d > 3:
+        raise Warning(
+            f"The large input values k={k} and/or d={d} might cause long run times."
+        )
+
+    frequency_map = {}
+    # FIXME here ALL possible patterns of length k are created -> should be optimised
+    possible_patterns = ["".join(p) for p in product(chars, repeat=k)]
+    for i in range(n - k + 1):
+        pattern = genome[i : i + k]
+        for kmer in possible_patterns:
+            if find_hamming_distance(pattern, kmer) <= d:
+                if kmer in frequency_map.keys():
+                    frequency_map[kmer] += 1
+                else:
+                    frequency_map[kmer] = 1
+
+    most_frequent = max(frequency_map.values())
+    return {
+        kmer for kmer, frequency in frequency_map.items() if frequency == most_frequent
+    }
