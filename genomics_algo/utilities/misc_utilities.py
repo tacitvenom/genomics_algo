@@ -70,3 +70,11 @@ def get_frequency_map(text: str, substring_length: int) -> Dict[str, int]:
         else:
             freq_map[substr] = 1
     return freq_map
+
+
+def validate_bases_in_genome(genome: str) -> bool:
+    """Validates a genome string for existing bases.
+    Raises ``ValueError`` if ``genome`` contains bases other than defined in ``Bases`` class."""
+    set_diff = set(genome).difference({Bases.A, Bases.C, Bases.G, Bases.T})
+    if not set_diff == set():
+        raise ValueError(f"Genome contains invalid bases: {set_diff}")
