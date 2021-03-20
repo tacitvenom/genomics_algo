@@ -5,14 +5,14 @@ from genomics_algo.utilities.read_files import (
 
 
 def test_read_genome():
-    genome = read_genome("genomics_algo/tests/test_data/lambda_virus.fa")
+    genome = read_genome("genomics_algo/tests/test_data/genomes/lambda_virus.fa")
     assert len(genome) == 48502
     assert genome[:50] == "GGGCGGCGACCTCGCGGGTTTTCGCTATTTATGAAAATTTTCCGGTTTAA"
 
 
 def test_read_fastq():
     reads, qualities = read_fastq(
-        "genomics_algo/tests/test_data/SRR835775_1.first1000.fastq"
+        "genomics_algo/tests/test_data/reads/SRR835775_1.first1000.fastq"
     )
     assert len(reads) == len(qualities) == 1000
     assert (

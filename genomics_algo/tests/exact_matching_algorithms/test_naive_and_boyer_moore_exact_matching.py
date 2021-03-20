@@ -50,7 +50,7 @@ def test_get_occurences_with_exact_match(exact_matching_algo):
 def test_get_occurences_in_entire_genome_with_boyer_moores_exact_match(
     exact_matching_algo,
 ):
-    text = read_genome("genomics_algo/tests/test_data/vibrio_cholerae.txt")
+    text = read_genome("genomics_algo/tests/test_data/genomes/vibrio_cholerae.txt")
     pattern = "ATGATCAAG"
     result = exact_matching_algo(pattern, text)
     assert result == [
@@ -100,7 +100,7 @@ def test_get_occurences_with_exact_match_with_reverse_complement(exact_matching_
     )
     assert result == [10, 24]
 
-    text = read_genome("genomics_algo/tests/test_data/phix.fa")
+    text = read_genome("genomics_algo/tests/test_data/genomes/phix.fa")
     pattern = "ATTA"
     result = get_occurences_with_exact_match_with_reverse_complement(
         pattern, text, exact_matching_algo

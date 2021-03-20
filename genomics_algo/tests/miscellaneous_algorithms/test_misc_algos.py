@@ -11,7 +11,7 @@ from genomics_algo.miscellaneous_algorithms.misc_algos import (
 
 @pytest.mark.skip(reason="Takes 10-15 mins in current implementation")
 def test_find_pattern_clumps_with_genome():
-    text = read_genome("genomics_algo/tests/test_data/e_coli.txt")
+    text = read_genome("genomics_algo/tests/test_data/genomes/e_coli.txt")
     patterns = find_pattern_clumps(
         text=text, substring_length=9, window_length=500, minimum_frequency=3
     )
@@ -51,7 +51,7 @@ def test_find_minimum_gc_skew_location():
 
 @pytest.mark.skip(reason="Takes about 30s in current implementation")
 def test_find_minimum_gc_skew_location_in_genome():
-    genome = read_genome("genomics_algo/tests/test_data/e_coli.txt")
+    genome = read_genome("genomics_algo/tests/test_data/genomes/e_coli.txt")
     result = find_minimum_gc_skew_location(genome)
     np.testing.assert_array_equal([3923619, 3923620, 3923621, 3923622], result)
 

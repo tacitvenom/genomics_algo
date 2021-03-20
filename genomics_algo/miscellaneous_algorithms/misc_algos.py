@@ -32,11 +32,14 @@ def find_most_freq_k_substring(
 
 def find_pattern_clumps(
     text: str, substring_length: int, window_length: int, minimum_frequency: int
-):
-    """TODO: [summary]
+) -> Set[str]:
+    """Find patterns forming clumps in a `text`, i.e., returns all the substrings of
+    length `substring_length` in `text` which occurred at least `minimum_frequency` times
+    in a window of fixed length `window_length` along the `text`, essentially looking for
+    a region where a k-mer appears several times in short succession
 
     Returns:
-        [type]: [description]
+        Set[str]: set of strings
     """
     patterns = set()
     for index in range(len(text) - window_length + 1):
